@@ -45,6 +45,7 @@ const SingleNFTPage = (props) => {
   }
 
   const resellNFT = async (e) => {
+<<<<<<< HEAD
     // console.log(e.target[0].value);
     // console.log(e);
     e.preventDefault();
@@ -52,6 +53,13 @@ const SingleNFTPage = (props) => {
     const valueToSend = ethers.utils.parseEther(`${cost}`)
     // console.log(cost);
     // console.log(valueToSend);
+=======
+    // console.log(typeof(e.target[0].value));
+    e.preventDefault();
+    const cost = 0.0015;
+    const valueToSend = ethers.utils.parseEther(`${cost}`)
+    console.log(cost);
+>>>>>>> c79af2a2f3b7ba232f9d7bcff9a05d6990bdd437
     if(accountBalance > valueToSend){
       const result = await contract.reSellToken(NFT.tokenId, e.target[0].value, {
         value: valueToSend,
