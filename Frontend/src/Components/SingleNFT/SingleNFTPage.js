@@ -30,8 +30,10 @@ const SingleNFTPage = (props) => {
   const buyingNFT = async () => {
     const cost = Number(NFT.price) + 0.0015;
     const valueToSend = ethers.utils.parseEther(`${cost}`)
-    console.log(cost);
-    if(accountBalance > valueToSend){
+    // console.log(cost);
+    // console.log(valueToSend);
+    // console.log(accountBalance);
+    if(accountBalance > cost){
       const result = await contract.createMarketSale(NFT.tokenId, {
         value: valueToSend,
         gasLimit: 3000000,
@@ -43,20 +45,22 @@ const SingleNFTPage = (props) => {
   }
 
   const resellNFT = async (e) => {
-    console.log(typeof(e.target[1].value));
+    // console.log(e.target[0].value);
+    // console.log(e);
     e.preventDefault();
-    // const cost = 0.0015;
-    // const valueToSend = ethers.utils.parseEther(`${cost}`)
+    const cost = 0.0015;
+    const valueToSend = ethers.utils.parseEther(`${cost}`)
     // console.log(cost);
-    // if(accountBalance > valueToSend){
-    //   const result = await contract.reSellToken(NFT.tokenId, e.target[1].value, {
-    //     value: valueToSend,
-    //     gasLimit: 3000000,
-    //   });
-    //   console.log(result);
-    // }else{
-    //   alert("Not Enough Money")
-    // }
+    // console.log(valueToSend);
+    if(accountBalance > valueToSend){
+      const result = await contract.reSellToken(NFT.tokenId, e.target[0].value, {
+        value: valueToSend,
+        gasLimit: 3000000,
+      });
+      console.log(result);
+    }else{
+      alert("Not Enough Money")
+    }
   }
 
   const nftNotSelected = () => {

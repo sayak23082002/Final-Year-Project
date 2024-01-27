@@ -14,6 +14,25 @@ const settings = {
   arrow: false,
 };
 
+
+const Moralis = require("moralis").default;
+const { EvmChain } = require("@moralisweb3/common-evm-utils");
+const runApp = async () => {
+  await Moralis.start({
+    apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6Ijc0YjY5ZDdkLWIwMDItNGFiYy04MWEyLWJmNTI4NWUyYzQ4NyIsIm9yZ0lkIjoiMzY5MDQxIiwidXNlcklkIjoiMzc5Mjc5IiwidHlwZUlkIjoiZGU0MjFlMTYtZDZhMi00YzNlLTg3ZDctMTUwMTI0MmMxMzEzIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MDMxNDIwNTQsImV4cCI6NDg1ODkwMjA1NH0.gEQyXlzpoW1e5A38FrxMThBy_UcV-X0hlq8TgQ6IEjA",
+    // ...and any other configuration
+  });
+  const address = "0xf2f0E62B2F19A30782A1e6a1D666360a551a3B77";
+  const chain = EvmChain.ETHEREUM;
+  const response = await Moralis.EvmApi.nft.getWalletNFTs({
+    address,
+    chain,
+  });
+  console.log(response.toJSON());
+};
+
+// runApp();
+
 const TrendingNFTS = () => {
 
   const explore = useNavigate();
@@ -33,7 +52,7 @@ const TrendingNFTS = () => {
         )}
       </Slider>
       <div className='tn-btn absolute-center'>
-        <Button btnText='SEE MORE' type='Secondary' btnOnClick={() => explore("/listing")} customClass='seemore-btn'></Button>
+        <Button btnText='SEE MORE' type='Secondary' btnOnClick={runApp} customClass='seemore-btn'></Button>
       </div>
     </div>
   )
