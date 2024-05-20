@@ -57,15 +57,17 @@ const SingleNFTPage = (props) => {
       const valueToSend = ethers.utils.parseEther(`${cost}`)
       console.log(valueToSend);
       // if (accountBalance > cost) {
-        // await contract.placeBid(NFT.tokenId, {
-        //   value: valueToSend,
-        //   gasLimit: 3000000,
-        // });
+        await contract.placeBid(NFT.tokenId, {
+          value: valueToSend,
+          gasLimit: 3000000,
+        });
         alert("Bid Placed Successfully!!!");
+        e.preventDefault();
         // console.log(result);
       // }
     } catch {
-      backToHome("/");
+      alert("Auction is not running anymore");
+      e.preventDefault();
     }
   }
 
