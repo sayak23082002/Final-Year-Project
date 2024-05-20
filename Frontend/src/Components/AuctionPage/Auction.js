@@ -43,9 +43,9 @@ const Auction = (props) => {
                 <div className="nft-listing absolute-center">
                     <div className="nft-grid">
                         {NFTs.map((nft) => {
-                            console.log(nft[1]);
+                            console.log(nft[7]);
                             console.log(accountAddress);
-                            if (!nft[4] && nft[7]) {
+                            if (nft[7]) {
                                 return (
                                     <div key={count} className="nft-card">
                                         <img className="nft-single" src={nft[5]} alt={nft[2]} />

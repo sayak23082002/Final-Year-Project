@@ -71,7 +71,7 @@ const DataUpload = (props) => {
           <div className="column">
             <div className="input-box">
               <label>Upload File</label>
-              <input type="file" onChange={retrieveFile} />
+              <input type="file" onChange={retrieveFile} required />
             </div>
           </div>
           <div className="gender-box">

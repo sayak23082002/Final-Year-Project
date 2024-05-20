@@ -17,13 +17,9 @@ const SingleNFTPage = (props) => {
   useEffect(() => {
     const seeAllOwners = async () => {
       try {
-        if (contract) {
-          // setOwners(await contract.getAllOwners(NFT.tokenId));
-          setEndTime(await contract.actualEnd(NFT.tokenId));
-        }
+        setEndTime(await contract.actualEnd(NFT.tokenId));
       } catch(e) {
         backToHome("/");
-        // console.log(e)
       }
     }
     seeAllOwners();
@@ -34,6 +30,7 @@ const SingleNFTPage = (props) => {
   const buyingNFT = async () => {
     try {
       const cost = Number(NFT.price) + 0.0015;
+      console.log(NFT.price);
       const valueToSend = ethers.utils.parseEther(`${cost}`)
       // console.log(cost);
       if (accountBalance > cost) {
@@ -51,23 +48,26 @@ const SingleNFTPage = (props) => {
 
   const placeBid = async (e) => {
     try {
-      console.log(Number(e.target[0].value));
-      const cost = Number(NFT.highestPayableBid) + Number(e.target[0].value);
-      console.log(cost);
-      const valueToSend = ethers.utils.parseEther(`${cost}`)
-      console.log(valueToSend);
-      // if (accountBalance > cost) {
-        await contract.placeBid(NFT.tokenId, {
-          value: valueToSend,
-          gasLimit: 3000000,
-        });
-        alert("Bid Placed Successfully!!!");
-        e.preventDefault();
-        // console.log(result);
-      // }
-    } catch {
-      alert("Auction is not running anymore");
       e.preventDefault();
+      console.log(Number(e.target[0].value));
+      const cost = (Number(NFT.highestPayableBid) / 1000000000000000000) + Number(e.target[0].value);
+      console.log(Number(NFT.highestPayableBid));
+      const valueToSend = ethers.utils.parseEther(`${cost}`);
+      console.log(valueToSend);
+      if (accountBalance > cost) {
+      console.log(contract)
+      await contract.placeBid(NFT.tokenId, {
+          value: valueToSend,
+          gasLimit: 9000000,
+        });
+      // console.log(res);
+      alert("Bid Placed Successfully!!!");
+      e.preventDefault();
+      // console.log(result);
+      }
+    } catch(e) {
+      console.log(e);
+      alert(e);
     }
   }
 
@@ -186,7 +186,7 @@ const SingleNFTPage = (props) => {
             </h2>
             <h2>
               <label>Highest Bid Amount : </label>
-              <label>{`${NFT.highestPayableBid} ETH`}</label>
+              <label>{`${NFT.highestPayableBid / 1000000000000000000} ETH`}</label>
             </h2>
             {button}
             </div>

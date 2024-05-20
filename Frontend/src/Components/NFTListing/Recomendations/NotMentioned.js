@@ -15,7 +15,7 @@ function NotMentioned(props) {
                 console.log("Not Mentioned");
                 console.log(accountAddress);
                 console.log(nft);
-                if(!nft[4] && nft[6] != maxOwned){
+                if(!nft[4] && nft[6] !== maxOwned){
                     return(
                         <div key={count} className="nft-card">
                             <img className="nft-single" src={nft[5]} alt={nft[2]} />

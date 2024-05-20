@@ -204,7 +204,7 @@ contract NFT_Marketplace is Initializable, ERC721URIStorageUpgradeable {
         buyNFT(tokenId, payable(msg.sender));
     }
 
-    function buyNFT(uint tokenId, address payable newOwner) public {
+    function buyNFT(uint tokenId, address payable newOwner) internal {
 
         // idMarketItem[tokenId].seller.transfer(value);
 
@@ -364,6 +364,9 @@ contract NFT_Marketplace is Initializable, ERC721URIStorageUpgradeable {
 
         if(bc == 0){
             idMarketItem[tokenId].auctionState = false;
+            idMarketItem[tokenId].highestPayableBid = 0;
+            actualEnd[tokenId] = "";
+            idMarketItem[tokenId].highestBiddder = payable(address(0));
         }
     }
 
