@@ -20,14 +20,18 @@ function NotMentioned(props) {
                         <div key={count} className="nft-card">
                             <img className="nft-single" src={nft[5]} alt={nft[2]} />
                             <p className='token-number'>NFT Number: {count++}</p>
-                            {accountAddress.toUpperCase() !== nft[1].toUpperCase() ? <Button className="buying-price" btnType='PRIMARY' btnText='BUY' btnOnClick={() => {
+                            {accountAddress.toUpperCase() !== nft[1].toUpperCase() ? !nft[7] ? <Button className="buying-price" btnType='PRIMARY' btnText='BUY' btnOnClick={() => {
                                 setNFT(nft);
+                                singleNFT("/single");
+                              }} /> : <Button className="buying-price" btnType='PRIMARY' btnText='Bid' btnOnClick={() => {
+                                props.setNFT(nft);
+                                // setCount(count);
                                 singleNFT("/single");
                               }} /> : <Button className="buying-price" btnType='PRIMARY' btnText='Visit' btnOnClick={() => {
                                 setNFT(nft);
                                 singleNFT("/single");
                               }} />}
-                              {accountAddress.length !== 0 && accountAddress.toUpperCase() === nft[1].toUpperCase() ? 
+                              {accountAddress.length !== 0 && accountAddress.toUpperCase() === nft[1].toUpperCase() ? !nft[7] ? 
                                 <Button className="buying-price" btnType='PRIMARY' btnText='Start Auction' btnOnClick={async () => {
                                   // if(response){
                                     alert("Auction Started!!!");
@@ -50,7 +54,7 @@ function NotMentioned(props) {
                                     let finalDateTime = currentDateTime.replace(minute,finalMin);
                                     // setEndtime(finalDateTime);
                                     await contract.startAuction(count - 1, finalDateTime);
-                                  }}  /> : console.log("Error")
+                                  }}  /> : console.log("Not Applicable") : console.log("Error")
                               }
                             </div>
                         )

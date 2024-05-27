@@ -82,7 +82,7 @@ const DataUpload = (props) => {
           </div>
           <div className="input-box address">
             <label>Enter the about section of the NFT :</label>
-            <input type="text" placeholder="e.i. gaming" required />
+            <input type="text" placeholder="e.i. gaming, anime, art, horror, movie, monkey" required />
           </div>
           <button>Submit</button>
         </form>

@@ -38,6 +38,8 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
     
     mapping (uint => mapping (address => uint)) public bids;
 
+    mapping (uint => string) public actualEnd;
+
     //particular address od bidders
 
     // mapping (uint => mapping (uint => address)) public bidsAddresses;
@@ -199,24 +201,10 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
 
         idMarketItem[tokenId].seller.transfer(msg.value);
 
-        // idMarketItem[tokenId].owner = payable(msg.sender);
-        // idMarketItem[tokenId].sold = true;
-        // idMarketItem[tokenId].seller = payable(msg.sender);
-
-        // _itemsSold.increment();
-
-        // owners[tokenId].push(msg.sender);
-
-        // recomendation[msg.sender][idMarketItem[tokenId].about] += 1;
-
-        // calculateHighestNFT(msg.sender);
-
-        // _transfer(address(this), msg.sender, tokenId);
-
         buyNFT(tokenId, payable(msg.sender));
     }
 
-    function buyNFT(uint tokenId, address payable newOwner) public {
+    function buyNFT(uint tokenId, address payable newOwner) internal {
 
         // idMarketItem[tokenId].seller.transfer(value);
 
@@ -341,43 +329,45 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
 
     function EndAuc(uint tokenId) public{
 
-        // address payable newOwner = idMarketItem[tokenId].highestBiddder;
-        // uint price = idMarketItem[tokenId].highestPayableBid;
+        address payable hb = idMarketItem[tokenId].highestBiddder;
+        address payable s = idMarketItem[tokenId].seller;
+        uint hpb = idMarketItem[tokenId].highestPayableBid;
+        address ms = msg.sender;
+        uint bc = idMarketItem[tokenId].bidCount;
 
-        require(block.timestamp > idMarketItem[tokenId].endTime);
+        require(block.timestamp > idMarketItem[tokenId].endTime && payable(msg.sender) != hb);
+        // require(block.timestamp > idMarketItem[tokenId].endTime, "Auction has not ended yet");
+        // require(payable(msg.sender) != hb, "You are not allowed");
 
-        idMarketItem[tokenId].auctionState = false;
-
-        // idMarketItem[tokenId].seller.transfer(idMarketItem[tokenId].highestPayableBid);
-
-        uint value;
-
-        if(idMarketItem[tokenId].highestBiddder != address(0)){
-            if(payable(msg.sender) == idMarketItem[tokenId].highestBiddder){
-                value = (bids[tokenId][idMarketItem[tokenId].highestBiddder] - idMarketItem[tokenId].highestPayableBid) - 1500000000000000;
-                bids[tokenId][msg.sender]=0;
-                idMarketItem[tokenId].seller.transfer(value);
-                buyNFT(tokenId, idMarketItem[tokenId].highestBiddder);
-            }else{
-                finalizeBid(tokenId);
+        if(hb != address(0)){
+            uint value;
+            if(payable(ms) == s){
+                if(bids[tokenId][hb] == hpb){
+                    bids[tokenId][hb]=0;
+                    s.transfer(hpb - 1500000000000000);
+                    buyNFT(tokenId, hb);
+                }else{
+                    value = (bids[tokenId][hb] - hpb) - 1500000000000000;
+                    bids[tokenId][hb]=0;
+                    s.transfer(hpb);
+                    hb.transfer(value);
+                    buyNFT(tokenId, hb);
+                }
+            }else if(bids[tokenId][ms] != 0){
+                value = bids[tokenId][ms];
+                bids[tokenId][ms]=0;
+                payable(ms).transfer(value);
             }
+            bc--;
         }
 
-        // idMarketItem[tokenId].owner = payable(idMarketItem[tokenId].highestBiddder);
 
-        // idMarketItem[tokenId].sold = true;
-
-        // idMarketItem[tokenId].seller = payable(idMarketItem[tokenId].highestBiddder);
-
-        // _itemsSold.increment();
-
-        // owners[tokenId].push(idMarketItem[tokenId].highestBiddder);
-
-        // recomendation[idMarketItem[tokenId].highestBiddder][idMarketItem[tokenId].about] += 1;
-
-        // calculateHighestNFT(idMarketItem[tokenId].highestBiddder);
-
-        // _transfer(address(this), idMarketItem[tokenId].highestBiddder, tokenId);
+        if(bc == 0){
+            idMarketItem[tokenId].auctionState = false;
+            idMarketItem[tokenId].highestPayableBid = 0;
+            actualEnd[tokenId] = "";
+            idMarketItem[tokenId].highestBiddder = payable(address(0));
+        }
     }
 
     //To calculate the minimum of 2 numbers
@@ -392,10 +382,12 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
 
     //This function is used to start auction for a particular NFT
 
-    function startAuction(uint tokenId) public {
+    function startAuction(uint tokenId, string memory endTime) public {
         require(idMarketItem[tokenId].seller == msg.sender && !idMarketItem[tokenId].sold);
         idMarketItem[tokenId].auctionState = true;
         idMarketItem[tokenId].endTime = block.timestamp + 120;
+        actualEnd[tokenId] = endTime;
+        // idMarketItem[tokenId].actualEnd = endTime;
         // auctionHappend[tokenId] = true;
     }
 
@@ -404,6 +396,9 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
     function placeBid(uint tokenId) public payable {
         uint currentbid = bids[tokenId][msg.sender] + msg.value;
         require(currentbid > idMarketItem[tokenId].highestPayableBid && block.timestamp <= idMarketItem[tokenId].endTime && msg.sender != idMarketItem[tokenId].seller && msg.value >= 1000000000000000000);
+        // require(block.timestamp <= idMarketItem[tokenId].endTime, "Auction ended");
+        // require(msg.sender != idMarketItem[tokenId].seller, "You are the owner");
+        // require(msg.value >= 1000000000000000000, "Pay More");
 
         if(bids[tokenId][msg.sender] == 0){
 
@@ -421,32 +416,6 @@ contract NFT_Marketplace2 is Initializable, ERC721URIStorageUpgradeable {
             idMarketItem[tokenId].highestPayableBid = min(currentbid,bids[tokenId][idMarketItem[tokenId].highestBiddder]+bidInc);
             idMarketItem[tokenId].highestBiddder = payable(msg.sender);
         }
-    }
-
-    //This function calculates the bidding amount for every user and sends the money accordingly
-
-    function finalizeBid(uint tokenId) public {
-        // require(!idMarketItem[tokenId].auctionState);
-        // require(block.timestamp > idMarketItem[tokenId].endTime);
-        address payable person;
-        uint value;
-        // if(idMarketItem[tokenId].highestBiddder != address(0)){
-            // for(uint i = 0; i < idMarketItem[tokenId].bidCount; i++){
-                // if(payable(msg.sender) == idMarketItem[tokenId].highestBiddder){
-                //     person = idMarketItem[tokenId].seller;
-                //     value = (bids[tokenId][idMarketItem[tokenId].highestBiddder] - idMarketItem[tokenId].highestPayableBid) - 1500000000000000;
-                // }
-                if(bids[tokenId][msg.sender] != 0){
-                    person = payable(msg.sender);
-                    value = bids[tokenId][msg.sender];
-                }
-                bids[tokenId][msg.sender]=0;
-                person.transfer(value);
-            // }
-            // return true;
-        // }else{
-        //     return false;
-        // }
     }
 
 }

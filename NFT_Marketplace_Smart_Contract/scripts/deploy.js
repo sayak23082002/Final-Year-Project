@@ -16,6 +16,8 @@
 const { ethers, upgrades } = require("hardhat");
 require("dotenv").config();
 
+// let, var, const
+
 async function main() {
   // const gas = await ethers.provider.getGasPrice();
   const MyNFT = await ethers.getContractFactory("NFT_Marketplace");

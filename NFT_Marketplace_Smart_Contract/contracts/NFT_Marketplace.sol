@@ -364,9 +364,6 @@ contract NFT_Marketplace is Initializable, ERC721URIStorageUpgradeable {
 
         if(bc == 0){
             idMarketItem[tokenId].auctionState = false;
-            idMarketItem[tokenId].highestPayableBid = 0;
-            actualEnd[tokenId] = "";
-            idMarketItem[tokenId].highestBiddder = payable(address(0));
         }
     }
 
