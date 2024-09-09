@@ -49,13 +49,13 @@ const SingleNFTPage = (props) => {
   const placeBid = async (e) => {
     try {
       e.preventDefault();
-      console.log(Number(e.target[0].value));
+      // console.log(Number(e.target[0].value));
       const cost = (Number(NFT.highestPayableBid) / 1000000000000000000) + Number(e.target[0].value);
-      console.log(Number(NFT.highestPayableBid));
+      // console.log(Number(NFT.highestPayableBid));
       const valueToSend = ethers.utils.parseEther(`${cost}`);
-      console.log(valueToSend);
+      // console.log(valueToSend);
       if (accountBalance > cost) {
-      console.log(contract)
+      // console.log(contract)
       await contract.placeBid(NFT.tokenId, {
           value: valueToSend,
           gasLimit: 9000000,
@@ -119,10 +119,11 @@ const SingleNFTPage = (props) => {
               let finalMin = min.toString();
               
               let finalDateTime = currentDateTime.replace(minute,finalMin);
+              console.log(NFT.tokenId);
               // setEndtime(finalDateTime);
-              await contract.startAuction(count - 1, finalDateTime);
+              await contract.startAuction(NFT.tokenId, finalDateTime);
               alert("Auction Started!!!");
-              backToHome("/");
+              // backToHome("/");
             }}  />
         }else{
           button = <button type="button" className="btn btn-success" onClick={buyingNFT}>Buy</button>

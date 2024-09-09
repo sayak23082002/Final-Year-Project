@@ -1,9 +1,10 @@
 const { ethers, upgrades } = require("hardhat");
+require("dotenv").config();
 
 async function main() {
     const NFT2 = await ethers.getContractFactory("NFT_Marketplace2");
     console.log("Marketplace version 2 is upgrading ... ");
-    await upgrades.upgradeProxy("0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", NFT2);
+    await upgrades.upgradeProxy(`${process.env.DEPLOYED_ADDRESS}`, NFT2);
     console.log("Marketplace version 2 is now on.");
 }
 

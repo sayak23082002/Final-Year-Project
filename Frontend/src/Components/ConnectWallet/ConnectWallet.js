@@ -14,10 +14,10 @@ const ConnectWallet = (props) => {
   })
 
   const { ethereum } = window;
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-  const localNodeUrl = 'http://localhost:8545';
-  const provider = new ethers.providers.JsonRpcProvider(localNodeUrl);
+  // const localNodeUrl = 'http://localhost:8545';
+  // const provider = new ethers.providers.JsonRpcProvider(localNodeUrl);
 
   useEffect(() => {
     const checkMetamaskAvailability = async () => {

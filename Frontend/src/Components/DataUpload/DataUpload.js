@@ -23,8 +23,8 @@ const DataUpload = (props) => {
           url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
           data: formData,
           headers: {
-            pinata_api_key: `7f4e6f581df4a2bcf0df`,
-            pinata_secret_api_key: `e471120b0151df1e70b8dab044a82608f4c03a321f53c58ca12c2e4d3e67b748`,
+            pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+            pinata_secret_api_key: `${process.env.REACT_APP_PINATA_SECRET_API_KEY}`,
             "Content-Type": "multipart/form-data",
           },
         });

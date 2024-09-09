@@ -39,6 +39,8 @@ import { ethers } from 'ethers';
 
 const App = () => {
 
+  // console.log(process.env.REACT_APP_CONTRACT_ADDRESS);
+
   const [haveMetamask, sethaveMetamask] = useState(true);
   const [accountAddress, setAccountAddress] = useState('');
   const [accountBalance, setAccountBalance] = useState('');
@@ -203,7 +205,7 @@ const App = () => {
     const providers = async() => {
       if(provider){
         const signer = provider.getSigner(accountAddress);
-        let contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+        let contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
         const contracts = new ethers.Contract(
           contractAddress, NFT_Marketplace.abi, signer
         )
